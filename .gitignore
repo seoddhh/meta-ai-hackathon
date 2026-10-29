@@ -11,3 +11,6 @@ __pycache__/
 .data/
 *.tsbuildinfo
 .claude
+.hallmark
+
+next-env.d.ts
