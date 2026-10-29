@@ -1,0 +1,40 @@
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.2rem; --text-xl: 1.44rem; --text-2xl: 1.728rem; --text-3xl: 2.074rem;
+  --text-display-s: 1.44rem; --text-display: 1.728rem; --text-section: 1.2rem; --text-title: 1rem; --text-lead: 1rem;
+  --text-wordmark: 2.074rem; --text-score: 2.074rem; --text-result: 3.583rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+
+  /* Forest paper and sage ink, read from the project's own palette (globals.css :root before the redesign). */
+  --color-paper: oklch(17% 0.014 150); --color-paper-2: oklch(21% 0.016 150); --color-paper-3: oklch(26% 0.018 148);
+  --color-ink: oklch(93% 0.022 122); --color-ink-2: oklch(84% 0.028 128); --color-muted: oklch(72% 0.03 132);
+  --color-rule: oklch(34% 0.02 145); --color-rule-strong: oklch(48% 0.03 140);
+  --color-accent: oklch(85% 0.12 124); --color-accent-ink: oklch(25% 0.045 140); --color-focus: oklch(89% 0.17 124);
+  --color-accent-soft: oklch(31% 0.04 135);
+
+  /* The two sides are game state, not decoration: Aegis cyan, Ember amber. */
+  --color-cyan: oklch(87% 0.1 170); --color-cyan-ink: oklch(24% 0.04 175); --color-cyan-soft: oklch(30% 0.04 170);
+  --color-amber: oklch(83% 0.11 70); --color-amber-ink: oklch(26% 0.045 65); --color-amber-soft: oklch(32% 0.04 70);
+  --color-neutral-beacon: oklch(93% 0.06 95);
+
+  --color-error: oklch(82% 0.11 55); --color-error-soft: oklch(30% 0.05 40); --color-error-rule: oklch(62% 0.1 50);
+  --color-success: oklch(84% 0.1 150);
+  --color-mock: oklch(87% 0.09 95); --color-mock-rule: oklch(62% 0.07 95);
+
+  --color-scrim: oklch(13% 0.012 150 / 0.72);
+  --color-shade-strong: oklch(14% 0.013 150 / 0.94); --color-shade-soft: oklch(14% 0.013 150 / 0.55);
+
+  --font-display: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-display);
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-outlier: var(--font-mono);
+  --display-weight: 700;
+
+  --radius-card: 4px; --radius-control: 3px; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: none;
+  --shadow-panel: 0 1px 2px oklch(10% 0.01 150 / 0.4);
+  --tracking-display: -0.01em;
+  --control-h: 36px; --control-h-s: 32px;
+}
