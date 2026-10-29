@@ -8,16 +8,18 @@ from dotenv import load_dotenv
 
 from .models import Battle, Unit
 from .providers import ProviderError, commander, configuration
+from .terrain import generate
 
 
 async def check():
     load_dotenv(Path(__file__).resolve().parents[1] / '.env')
     print(json.dumps(configuration(), ensure_ascii=False))
-    b = Battle(id='smoke', created_at=datetime.now(timezone.utc).isoformat(), name='Connection test', mode='live',
-               prompts={'cyan': '북쪽 신호 거점을 확보해.', 'amber': '남쪽 신호 거점을 확보해.'},
-               units=[Unit(id=f'{s}-{r}', side=s, role=r, x=x, y=y if s == 'cyan' else 10-y)
-                      for s, x in [('cyan', 1), ('amber', 9)]
-                      for r, y in [('scout', 2), ('vanguard', 5), ('support', 8)]])
+    field = generate(73184)
+    b = Battle(id='smoke', created_at=datetime.now(timezone.utc).isoformat(), name='Connection test', mode='live', field=field,
+               prompts={'cyan': '알파 신호 거점을 확보해.', 'amber': '찰리 신호 거점을 확보해.'},
+               units=[Unit(id=f'{s}-{r}', side=s, role=r, x=p[0], y=p[1])
+                      for s in ('cyan', 'amber')
+                      for r, p in zip(('scout', 'vanguard', 'support'), field.spawns[s])])
     try:
         result = await commander(b, 'cyan')
         print(json.dumps({'commander_call': 'passed', 'assignments': len(result.assignments)}, ensure_ascii=False))

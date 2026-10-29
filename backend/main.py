@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 
-from .engine import BEACONS, SIZE, WALLS, snapshot
+from .engine import snapshot
 from .models import AdvanceBattle, Battle, CreateBattle, Event, PromptUpdate, TerrainRequest, Unit
 from .terrain import generate
 from .orchestration import round_graph
@@ -52,7 +52,7 @@ def health():
 
 @app.get('/config')
 def config():
-    return {**configuration(), 'map': {'size': SIZE, 'walls': sorted(WALLS), 'beacons': BEACONS}}
+    return configuration()
 
 
 @app.get('/battles')
@@ -73,7 +73,7 @@ def create_battle(body: CreateBattle):
     field = generate(body.seed, body.biome)
     battle = Battle(id=uuid4().hex, created_at=datetime.now(timezone.utc).isoformat(), name=field.name,
                     mode=body.mode, prompts={'cyan': body.cyan_prompt, 'amber': body.amber_prompt},
-                    field=field, max_rounds=24,
+                    field=field, max_rounds=30,
                     units=[Unit(id=f'{side}-{role}', side=side, role=role, x=point[0], y=point[1])
                            for side in ('cyan', 'amber')
                            for role, point in zip(('scout', 'vanguard', 'support'), field.spawns[side])],
@@ -135,11 +135,11 @@ async def generate_image(battle_id: str):
             raise HTTPException(503, 'Muse Image에 연결하려면 MODEL_API_KEY가 필요합니다.')
         # Only the adjudicated record supplies facts; player text never enters the image prompt.
         prompt = ('Create a polished cinematic isometric 3D collectible match illustration for SIGNAL WAR, '
-                  'a fictional non-lethal robot sport on a low-poly natural forest battlefield. '
-                  'Cyan and amber robot squads, three luminous signal beacons, pine trees, angular cliffs, winding river, wooden bridges. '
+                  'a fictional non-lethal robot sport on a wide low-poly natural battlefield. '
+                  'Cyan and amber robot squads, two home bases, three luminous signal beacons, pine groves, rocks, winding river, wooden bridges. '
                   'No humans, real-world military references, weapons, gore, or readable text. '
                   'Use this verified game result for the composition; do not invent a different winner: '
-                  f'winner={battle.winner}, score={battle.scores}, rounds={battle.round}, biome={battle.field.biome if battle.field else "arena"}. '
+                  f'winner={battle.winner}, score={battle.scores}, rounds={battle.round}, biome={battle.field.biome}. '
                   'Highlight the winning color, or show balanced colors for a draw. This is an artistic recap, not the source of the result.')
         try:
             async with httpx.AsyncClient(timeout=150) as client:

@@ -3,6 +3,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 
+from pydantic import ValidationError
+
 from .models import Battle
 
 
@@ -33,10 +35,18 @@ class Store:
     def get(self, battle_id: str) -> Battle | None:
         with self.connect() as db:
             row = db.execute('SELECT body FROM battles WHERE id=?', (battle_id,)).fetchone()
-        return Battle.model_validate_json(row[0]) if row else None
+        return _load(row[0]) if row else None
 
     def list(self) -> list[dict]:
         with self.connect() as db:
             rows = db.execute('SELECT body FROM battles ORDER BY created_at DESC LIMIT 50').fetchall()
-        return [{key: body[key] for key in ['id', 'name', 'mode', 'status', 'round', 'winner', 'scores', 'created_at', 'image_path']}
-                for row in rows for body in [Battle.model_validate_json(row[0]).model_dump()]]
+        return [{key: getattr(battle, key) for key in ['id', 'name', 'mode', 'status', 'round', 'winner', 'scores', 'created_at', 'image_path']}
+                for row in rows for battle in [_load(row[0])] if battle]
+
+
+def _load(body: str) -> Battle | None:
+    """Records from the retired grid maps no longer validate; they stay in the file but are not served."""
+    try:
+        return Battle.model_validate_json(body)
+    except ValidationError:
+        return None
