@@ -21,6 +21,7 @@ def test_create_advance_replay_and_round_conflict(client):
     r = client.post('/battles', json={})
     assert r.status_code == 201
     b = r.json()
+    assert b['max_rounds'] == 30 and b['field']['size'] == 5000
     assert b['providers']['worker'] == '규칙 기반 테스트 정책'
     path = f'/battles/{b["id"]}'
     assert client.post(path+'/advance', json={'expected_round': 0}).status_code == 200
@@ -102,10 +103,10 @@ def test_map_preview_matches_created_game_and_agent_order_ownership(client):
     assert b['field'] == preview
     path = f'/battles/{b["id"]}'
     assert client.patch(path+'/strategy',json={'side':'cyan','unit_id':'amber-scout','prompt':'대기'}).status_code == 422
-    r=client.patch(path+'/strategy',json={'side':'cyan','unit_id':'cyan-scout','prompt':'남쪽 거점으로 이동'})
+    r=client.patch(path+'/strategy',json={'side':'cyan','unit_id':'cyan-scout','prompt':'찰리 거점으로 이동'})
     assert r.status_code==200
-    assert r.json()['unit_prompts']['cyan-scout']=='남쪽 거점으로 이동'
+    assert r.json()['unit_prompts']['cyan-scout']=='찰리 거점으로 이동'
     assert r.json()['prompts']['cyan']==b['prompts']['cyan']
     advanced=client.post(path+'/advance',json={'expected_round':0}).json()
-    assert advanced['assignments']['cyan'][0]['objective']=='south'
+    assert advanced['assignments']['cyan'][0]['objective']=='charlie'
     assert any(e['kind']=='task' and e['unit_id']=='cyan-scout' for e in advanced['frames'][1]['events'])
